@@ -1,11 +1,15 @@
-import React, { useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import { 
   DollarSign,
   TrendingUp,
   Users,
   Package
 } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const DEPARTMENTS = [
   { 
@@ -52,17 +56,104 @@ const DEPARTMENTS = [
 ];
 
 const DepartmentCards: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardsWrapperRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  // Transform scroll progress to horizontal scroll
-  const x = useTransform(scrollYProgress, [0, 1], ['0%', '-75%']);
+  useEffect(() => {
+    if (!sectionRef.current || !cardsWrapperRef.current) return;
+
+    let scrollTrigger: ScrollTrigger | null = null;
+
+    const setupScrollTrigger = () => {
+      // Kill existing ScrollTriggers for this section
+      ScrollTrigger.getAll().forEach(st => {
+        if (st.vars.trigger === sectionRef.current) {
+          st.kill();
+        }
+      });
+
+      const cards = cardsWrapperRef.current?.children;
+      if (!cards || cards.length === 0) return;
+
+      // Wait for next frame to ensure layout is calculated
+      requestAnimationFrame(() => {
+        if (!cardsWrapperRef.current || !sectionRef.current) return;
+
+        // Calculate total width of all cards
+        let totalWidth = 0;
+        const gap = 24; // gap-6 = 24px
+        
+        Array.from(cards).forEach((card) => {
+          totalWidth += (card as HTMLElement).offsetWidth + gap;
+        });
+        totalWidth -= gap; // Remove last gap
+
+        const viewportWidth = window.innerWidth;
+        const scrollDistance = totalWidth - viewportWidth;
+
+        if (scrollDistance <= 0) return; // No need to scroll if all cards fit
+
+        // Reset position
+        gsap.set(cardsWrapperRef.current, { x: 0 });
+
+        // Create the horizontal scroll animation with pinning
+        const animation = gsap.to(cardsWrapperRef.current, {
+          x: -scrollDistance,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top top',
+            end: () => `+=${scrollDistance}`,
+            pin: true,
+            scrub: 1,
+            anticipatePin: 1,
+            onUpdate: (self) => {
+              const progress = self.progress;
+              const newIndex = Math.min(
+                Math.floor(progress * (cards.length - 1)),
+                cards.length - 1
+              );
+              setActiveIndex(newIndex);
+            },
+          },
+        });
+
+        scrollTrigger = animation.scrollTrigger as ScrollTrigger;
+        ScrollTrigger.refresh();
+      });
+    };
+
+    // Initial setup
+    const timeoutId = setTimeout(setupScrollTrigger, 200);
+
+    // Handle resize
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      setupScrollTrigger();
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', handleResize);
+      if (scrollTrigger) {
+        scrollTrigger.kill();
+      }
+      ScrollTrigger.getAll().forEach(st => {
+        if (st.vars.trigger === sectionRef.current) {
+          st.kill();
+        }
+      });
+    };
+  }, []);
 
   return (
-    <section className="w-full py-20 relative overflow-hidden" ref={containerRef}>
+    <section 
+      ref={sectionRef}
+      className="w-full py-20 relative overflow-hidden"
+    >
       <div className="w-full max-w-[90rem] mx-auto px-4 md:px-8">
         <motion.div
           className="text-center mb-12"
@@ -77,28 +168,32 @@ const DepartmentCards: React.FC = () => {
         </motion.div>
 
         {/* Horizontal Scrolling Container */}
-        <div className="relative overflow-x-hidden">
-          <motion.div
-            className="flex gap-6"
-            style={{ x }}
+        <div 
+          className="relative overflow-x-hidden w-full"
+        >
+          <div 
+            ref={cardsWrapperRef}
+            className="flex gap-6 w-max"
           >
             {DEPARTMENTS.map((dept, index) => {
               const Icon = dept.icon;
               
               return (
-                <motion.div
+                <div
                   key={dept.id}
-                  className="flex-shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)]"
-                  initial={{ opacity: 0, x: 100 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ 
-                    duration: 0.6, 
-                    delay: index * 0.1,
-                    ease: [0.22, 1, 0.36, 1] 
-                  }}
+                  className="flex-shrink-0 w-[calc(100vw-8rem)] md:w-[calc((100vw-8rem)/2)] lg:w-[calc((100vw-8rem)/3)] xl:w-[calc((100vw-8rem)/4)]"
                 >
-                  <div className="w-full h-[500px] md:h-[600px] bg-white/80 backdrop-blur-xl rounded-2xl border border-white/20 shadow-xl p-8 md:p-12 flex flex-col gap-8 group/card hover:bg-white/90 transition-all duration-300">
+                  <motion.div
+                    className="w-full h-[500px] md:h-[600px] bg-white/80 backdrop-blur-xl rounded-2xl border border-white/20 shadow-xl p-8 md:p-12 flex flex-col gap-8 group/card hover:bg-white/90 transition-all duration-300"
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ 
+                      duration: 0.6, 
+                      delay: index * 0.1,
+                      ease: [0.22, 1, 0.36, 1] 
+                    }}
+                  >
                     {/* Header */}
                     <div className="flex items-center space-x-4">
                       <div className="w-14 h-14 bg-black rounded-xl flex items-center justify-center text-white group-hover/card:bg-blue-600 transition-all duration-300">
@@ -189,12 +284,34 @@ const DepartmentCards: React.FC = () => {
                         </div>
                       ))}
                     </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                </div>
               );
             })}
-          </motion.div>
+          </div>
         </div>
+
+        {/* Navigation Dots */}
+        <motion.div
+          className="flex justify-center space-x-2 mt-8"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          {DEPARTMENTS.map((_, index) => (
+            <motion.button
+              key={index}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                activeIndex === index 
+                  ? 'bg-blue-600 w-8' 
+                  : 'bg-slate-300 hover:bg-slate-400'
+              }`}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+            />
+          ))}
+        </motion.div>
       </div>
     </section>
   );

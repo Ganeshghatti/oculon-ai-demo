@@ -12,19 +12,15 @@ import { motion } from "framer-motion";
 import "../styles.css";
 
 const cardVariants = {
-  hidden: (direction: number) => ({
+  hidden: {
     opacity: 0,
-    scale: 0.8,
-    x: direction === 0 ? -50 : direction === 1 ? 50 : 0,
-    y: direction === 2 ? 50 : 0,
-  }),
+    y: 20,
+  },
   visible: {
     opacity: 1,
-    scale: 1,
-    x: 0,
     y: 0,
     transition: {
-      duration: 0.6,
+      duration: 0.5,
       ease: [0.22, 1, 0.36, 1],
     },
   },
@@ -49,7 +45,6 @@ const BentoGrid: React.FC = () => {
         {/* CARD 1: Agent Memory */}
         <motion.div
           className="group col-span-1 md:col-span-2 bg-white/80 backdrop-blur-xl rounded-2xl border border-white/20 p-6 shadow-lg shadow-black/5 hover:shadow-xl hover:border-blue-500/30 transition-all duration-700 relative overflow-hidden flex flex-col justify-between h-[300px]"
-          custom={0}
           variants={cardVariants}
         >
           <div className="relative z-10">
@@ -99,7 +94,6 @@ const BentoGrid: React.FC = () => {
         {/* CARD 2: Model Lint */}
         <motion.div
           className="group bg-white/80 backdrop-blur-xl rounded-2xl border border-white/20 p-6 shadow-lg shadow-black/5 hover:shadow-xl hover:border-blue-500/30 transition-all duration-700 relative overflow-hidden flex flex-col h-[300px]"
-          custom={1}
           variants={cardVariants}
         >
           <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center mb-4 text-white group-hover:bg-blue-600 group-hover:rotate-12 group-hover:scale-110 transition-all duration-500">
@@ -153,7 +147,6 @@ const BentoGrid: React.FC = () => {
         {/* CARD 3: Oculon MCP */}
         <motion.div
           className="group bg-white/80 backdrop-blur-xl rounded-2xl border border-white/20 p-6 shadow-lg shadow-black/5 hover:shadow-xl hover:border-blue-500/30 transition-all duration-700 relative overflow-hidden flex flex-col justify-between min-h-[220px]"
-          custom={2}
           variants={cardVariants}
         >
           <div>
@@ -203,7 +196,6 @@ const BentoGrid: React.FC = () => {
         {/* CARD 4: Watchtower */}
         <motion.div
           className="group bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-800/50 p-6 shadow-lg shadow-black/10 hover:shadow-xl hover:border-blue-500/30 transition-all duration-700 relative overflow-hidden flex flex-col justify-between min-h-[220px]"
-          custom={0}
           variants={cardVariants}
         >
           <div>
@@ -243,7 +235,6 @@ const BentoGrid: React.FC = () => {
         {/* CARD 5: Command Palette */}
         <motion.div
           className="group bg-white/80 backdrop-blur-xl rounded-2xl border border-white/20 p-6 shadow-lg shadow-black/5 hover:shadow-xl hover:border-blue-500/30 transition-all duration-700 relative overflow-hidden flex flex-col justify-between min-h-[220px]"
-          custom={1}
           variants={cardVariants}
         >
           <div>
@@ -285,7 +276,6 @@ const BentoGrid: React.FC = () => {
         {/* CARD 6: Scenario Sandbox */}
         <motion.div
           className="group bg-white/80 backdrop-blur-xl rounded-2xl border border-white/20 p-6 shadow-lg shadow-black/5 hover:shadow-xl hover:border-blue-500/30 transition-all duration-700 relative overflow-hidden flex flex-col justify-between min-h-[220px] col-span-1"
-          custom={2}
           variants={cardVariants}
         >
           <div>
@@ -325,7 +315,6 @@ const BentoGrid: React.FC = () => {
         {/* CARD 7: Turbo Apply */}
         <motion.div
           className="group col-span-1 md:col-span-2 bg-gradient-to-r from-slate-50/80 to-white/80 backdrop-blur-xl rounded-2xl border border-white/20 p-6 shadow-lg shadow-black/5 hover:shadow-xl hover:border-blue-500/30 transition-all duration-700 relative overflow-hidden flex flex-col md:flex-row items-center justify-between min-h-[200px]"
-          custom={2}
           variants={cardVariants}
         >
           <div className="relative z-10 max-w-md">
