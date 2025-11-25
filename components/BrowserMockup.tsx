@@ -1,14 +1,20 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import DashboardSimulation from './DashboardSimulation';
 
 const BrowserMockup: React.FC = () => {
   return (
     <div className="relative group perspective-1000">
        {/* 3D Tilt Effect Container */}
-      <div className="relative w-full mx-auto transition-transform duration-500 ease-out transform group-hover:scale-[1.005] group-hover:-translate-y-1">
+      <motion.div
+        className="relative w-full mx-auto transition-transform duration-500 ease-out transform group-hover:scale-[1.005] group-hover:-translate-y-1"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      >
         
         {/* Browser Frame */}
-        <div className="relative bg-white rounded-xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border border-slate-200 overflow-hidden ring-1 ring-slate-900/5">
+        <div className="relative bg-white/90 backdrop-blur-xl rounded-xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border border-white/20 overflow-hidden ring-1 ring-slate-900/5">
           
           {/* Window Controls Header */}
           <div className="h-9 bg-slate-50 border-b border-slate-200 flex items-center px-4 space-x-2">
@@ -36,9 +42,19 @@ const BrowserMockup: React.FC = () => {
         </div>
         
         {/* Decorative elements behind browser */}
-        <div className="absolute -z-10 -bottom-12 -right-12 w-72 h-72 bg-black/5 rounded-full blur-3xl opacity-70"></div>
-        <div className="absolute -z-10 -top-12 -left-12 w-72 h-72 bg-black/5 rounded-full blur-3xl opacity-70"></div>
-      </div>
+        <motion.div
+          className="absolute -z-10 -bottom-12 -right-12 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl opacity-70"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 0.7, scale: 1 }}
+          transition={{ duration: 1, delay: 0.3 }}
+        ></motion.div>
+        <motion.div
+          className="absolute -z-10 -top-12 -left-12 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl opacity-70"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 0.7, scale: 1 }}
+          transition={{ duration: 1, delay: 0.5 }}
+        ></motion.div>
+      </motion.div>
     </div>
   );
 };

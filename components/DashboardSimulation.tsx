@@ -38,12 +38,12 @@ const DashboardSimulation: React.FC = () => {
 
   return (
     <div 
-      className="w-full h-full bg-slate-50 flex flex-col font-geist overflow-hidden select-none"
+      className="w-full h-full bg-slate-50/80 backdrop-blur-xl flex flex-col font-geist overflow-hidden select-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       {/* Top Bar */}
-      <div className="h-12 border-b border-slate-200 bg-white flex items-center px-4 justify-between shrink-0">
+      <div className="h-12 border-b border-slate-200/50 bg-white/80 backdrop-blur-md flex items-center px-4 justify-between shrink-0">
         <div className="flex items-center space-x-2">
             <img 
               src="/logo.jpeg" 
@@ -52,7 +52,6 @@ const DashboardSimulation: React.FC = () => {
               height={28} 
               className="flex-shrink-0 object-contain"
             />
-            <span className="font-semibold text-black text-sm">OCULON FP&A</span>
         </div>
         <div className="flex items-center space-x-3">
             <div className="hidden md:flex items-center px-3 py-1.5 bg-slate-100 rounded-md border border-slate-200 w-40">
@@ -64,7 +63,7 @@ const DashboardSimulation: React.FC = () => {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <div className="w-14 md:w-56 border-r border-slate-200 bg-white flex flex-col py-4 space-y-1">
+        <div className="w-14 md:w-56 border-r border-slate-200/50 bg-white/80 backdrop-blur-md flex flex-col py-4 space-y-1">
             {FEATURES.map((feature, index) => {
                 const isActive = activeTabIndex === index;
                 const Icon = feature.icon;

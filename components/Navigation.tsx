@@ -1,9 +1,15 @@
 import React from "react";
 import { ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Navigation: React.FC = () => {
   return (
-    <div className="relative z-10 w-full">
+    <motion.div
+      className="relative z-10 w-full border-b border-slate-200/50 backdrop-blur-xl bg-white/80"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+    >
       <nav className="w-full max-w-[90rem] mx-auto px-4 md:px-8 py-6 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center space-x-3 cursor-pointer">
@@ -17,7 +23,7 @@ const Navigation: React.FC = () => {
         </div>
 
         {/* Center Navigation */}
-        <div className="hidden md:flex items-center space-x-1 text-sm font-medium text-black bg-white px-4 py-2 rounded-full border border-slate-200/50">
+        <div className="hidden md:flex items-center space-x-1 text-sm font-medium text-black bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 shadow-lg shadow-black/5">
           <a href="#" className="px-4 py-1.5 hover:text-black transition-colors rounded-full hover:bg-slate-50">
             Product
           </a>
@@ -36,7 +42,7 @@ const Navigation: React.FC = () => {
           </button>
         </div>
       </nav>
-    </div>
+    </motion.div>
   );
 };
 
